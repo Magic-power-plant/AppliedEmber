@@ -1,6 +1,7 @@
 package com.pingsu.appliedember;
 
 import appeng.api.client.AEKeyRendering;
+import appeng.api.client.StorageCellModels;
 import appeng.api.ids.AECreativeTabIds;
 import com.pingsu.appliedember.client.render.EmberRenderer;
 import com.pingsu.appliedember.content.cell.EmberCellContent;
@@ -10,12 +11,15 @@ import com.pingsu.appliedember.content.p2p.EmberP2PContent;
 import com.pingsu.appliedember.integration.EmberIntegration;
 import com.pingsu.appliedember.me.key.EmberKey;
 import com.pingsu.appliedember.me.key.EmberKeyType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -66,7 +70,30 @@ public class AppliedEmber {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
 
+        // Drive-slot models must sit in AE2's StorageCellModels before the first model bake, and the
+        // initial resource reload overlaps with the mod setup phases in large packs (the drive model's
+        // dependencies are collected before FMLClientSetupEvent runs) — so client setup is too late.
+        // The item register event is the earliest point where the DeferredRegister items exist, and
+        // it always completes well before the resource reload. LOWEST priority keeps this behind this
+        // mod's own DeferredRegister handlers.
+        modEventBus.addListener(EventPriority.LOWEST, false, RegisterEvent.class, this::registerDriveCellModels);
+
         LOGGER.debug("AppliedEmber ember/AE2 integration registered");
+    }
+
+    /**
+     * The item registry has just been filled: bind every ember cell item to its drive-slot model.
+     * Runs on both sides; {@link StorageCellModels} is a plain static map, so the server-side call
+     * is a harmless no-op.
+     */
+    private void registerDriveCellModels(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registries.ITEM)) {
+            return;
+        }
+        EmberCellContent.registerDriveModels();
+        if (ModList.get().isLoaded(EmberMegaCellContent.MEGA_MODID)) {
+            EmberMegaCellContent.registerDriveModels();
+        }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -106,14 +133,8 @@ public class AppliedEmber {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             AEKeyRendering.register(EmberKeyType.TYPE, EmberKey.class, EmberRenderer.INSTANCE);
-            // Items exist by now, and the drive model is baked after client setup, so this is the
-            // window in which drive-slot visuals have to be registered.
-            event.enqueueWork(() -> {
-                EmberCellContent.registerDriveModels();
-                if (ModList.get().isLoaded(EmberMegaCellContent.MEGA_MODID)) {
-                    EmberMegaCellContent.registerDriveModels();
-                }
-            });
+            // Drive-slot visuals are bound in registerDriveCellModels (item register event) — client
+            // setup can run after the first model bake, which is too late for StorageCellModels.
             LOGGER.debug("Ember AEKey renderer registered");
         }
     }

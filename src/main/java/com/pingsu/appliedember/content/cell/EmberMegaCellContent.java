@@ -175,8 +175,8 @@ public final class EmberMegaCellContent {
      * Registers the model used to render these cells while inserted in a drive. The faces are baked
      * from the ember housing plus this mod's per-tier overlays by {@code tools/gen-drive-faces.ps1},
      * the same way the base line's faces are. The same timing rules as
-     * {@link EmberCellContent#registerDriveModels()} apply: call from client setup, and only when
-     * MEGA Cells is loaded.
+     * {@link EmberCellContent#registerDriveModels()} apply: call right after the item registry is
+     * filled (see that method for why client setup is too late), and only when MEGA Cells is loaded.
      */
     public static void registerDriveModels() {
         for (MegaTier tier : TIERS) {

@@ -192,8 +192,11 @@ public final class EmberCellContent {
      *
      * <p>Must be called after the item registry has been filled (a {@code RegistryObject} has no value
      * during mod construction — doing this from the constructor throws
-     * {@code Registry Object not present}) and before the drive model is baked. The client setup event
-     * satisfies both, which is why {@code AppliedEmber.ClientModEvents} calls this.
+     * {@code Registry Object not present}) and before the drive model is baked. The item register
+     * event satisfies both: it is the earliest point where the items exist, and it always finishes
+     * before the first model bake (unlike {@code FMLClientSetupEvent}, which large packs can run
+     * after the initial resource reload has already collected the drive model's dependencies).
+     * {@code AppliedEmber} calls this from a LOWEST-priority {@code RegisterEvent} listener.
      */
     public static void registerDriveModels() {
         for (Tier tier : TIERS) {

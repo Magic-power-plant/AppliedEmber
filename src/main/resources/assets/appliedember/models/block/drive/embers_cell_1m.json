@@ -1,6 +1,6 @@
 {
   "parent": "ae2:block/drive/drive_cell",
   "textures": {
-    "cell": "appliedember:block/drive/embers_cell_1m"
+    "cell": "appliedember:block/drive/ember_cell"
   }
 }
