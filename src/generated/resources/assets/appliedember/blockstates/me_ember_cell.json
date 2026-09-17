@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "appliedember:block/me_ember_cell",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "appliedember:block/me_ember_cell"
+    },
+    "facing=south": {
+      "model": "appliedember:block/me_ember_cell",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "appliedember:block/me_ember_cell",
+      "y": 270
+    }
+  }
+}

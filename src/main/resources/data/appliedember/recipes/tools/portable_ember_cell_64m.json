@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "megacells"
+    }
+  ],
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2:chest"
+    },
+    {
+      "item": "megacells:cell_component_64m"
+    },
+    {
+      "item": "ae2:energy_cell"
+    },
+    {
+      "item": "appliedember:ember_cell_housing"
+    }
+  ],
+  "result": {
+    "item": "appliedember:portable_ember_cell_64m"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "megacells"
+    }
+  ],
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "appliedember:ember_cell_housing"
+    },
+    {
+      "item": "megacells:cell_component_16m"
+    }
+  ],
+  "result": {
+    "item": "appliedember:ember_storage_cell_16m"
+  }
+}

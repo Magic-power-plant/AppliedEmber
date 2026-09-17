@@ -1,0 +1,19 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/dawnstone"
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "forge:ingots/dawnstone"
+    }
+  ],
+  "output": {
+    "item": "appliedember:ember_cell_housing"
+  },
+  "tablet": {
+    "item": "ae2:item_cell_housing"
+  }
+}

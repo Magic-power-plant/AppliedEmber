@@ -1,0 +1,52 @@
+{
+  "values": [
+    {
+      "id": "embers:ember_bore",
+      "required": false
+    },
+    {
+      "id": "embers:ember_activator",
+      "required": false
+    },
+    {
+      "id": "embers:ember_emitter",
+      "required": false
+    },
+    {
+      "id": "embers:ember_receiver",
+      "required": false
+    },
+    {
+      "id": "embers:ember_funnel",
+      "required": false
+    },
+    {
+      "id": "embers:ember_injector",
+      "required": false
+    },
+    {
+      "id": "embers:ember_ejector",
+      "required": false
+    },
+    {
+      "id": "embers:ember_siphon",
+      "required": false
+    },
+    {
+      "id": "embers:ember_relay",
+      "required": false
+    },
+    {
+      "id": "embers:ember_dial",
+      "required": false
+    },
+    {
+      "id": "embers:ember_jar",
+      "required": false
+    },
+    {
+      "id": "embers:ember_cartridge",
+      "required": false
+    }
+  ]
+}

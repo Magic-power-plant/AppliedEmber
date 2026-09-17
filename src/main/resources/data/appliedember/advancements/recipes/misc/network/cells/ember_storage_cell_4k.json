@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cell_component_4k": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2:cell_component_4k"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_ember_cell_housing": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "appliedember:ember_cell_housing"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "appliedember:network/cells/ember_storage_cell_4k"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_ember_cell_housing",
+      "has_cell_component_4k",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "appliedember:network/cells/ember_storage_cell_4k"
+    ]
+  },
+  "sends_telemetry_event": false
+}
