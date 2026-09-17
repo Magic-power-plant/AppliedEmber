@@ -21,18 +21,25 @@ import com.pingsu.appliedember.me.key.EmberKeyType;
 import com.pingsu.appliedember.me.strategy.EmberExternalStorageStrategy;
 import com.rekindled.embers.api.capabilities.EmbersCapabilities;
 import com.rekindled.embers.recipe.IAlchemyRecipe;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.ArrayList;
 
 /**
  * In-game verification against a real (headless) Forge server with AE2 and Embers loaded — the part of
@@ -282,6 +289,54 @@ public final class AppliedEmberGameTests {
         helper.assertTrue(strategy.createWrapper(false, () -> {
         }) != null,
                 "an ordinary Ember machine must remain visible to a storage bus (plan F2)");
+        helper.succeed();
+    }
+
+    /**
+     * The alchemy query command must answer recipe ids with the pedestal input -> aspectus mapping,
+     * and reject ids that are not loaded alchemy recipes.
+     */
+    @GameTest(template = TEMPLATE)
+    public static void alchemyCommandReportsAspectsByRecipeId(GameTestHelper helper) {
+        var messages = new ArrayList<Component>();
+        var source = new CommandSourceStack(new CommandSource() {
+            @Override
+            public void sendSystemMessage(Component message) {
+                messages.add(message);
+            }
+
+            @Override
+            public boolean acceptsSuccess() {
+                return true;
+            }
+
+            @Override
+            public boolean acceptsFailure() {
+                return true;
+            }
+
+            @Override
+            public boolean shouldInformAdmins() {
+                return false;
+            }
+
+            @Override
+            public boolean alwaysAccepts() {
+                return true;
+            }
+        }, Vec3.ZERO, Vec2.ZERO, helper.getLevel(), 4, "gametest", Component.literal("gametest"),
+                helper.getLevel().getServer(), null);
+
+        var server = helper.getLevel().getServer();
+        server.getCommands().performPrefixedCommand(source,
+                "appliedember alchemy appliedember:alchemy/ember_cell_housing");
+        helper.assertTrue(messages.stream().anyMatch(m -> m.getString().contains("基座")),
+                "the alchemy command must list the pedestal inputs for the housing recipe");
+
+        messages.clear();
+        server.getCommands().performPrefixedCommand(source, "appliedember alchemy appliedember:nope");
+        helper.assertTrue(messages.stream().anyMatch(m -> m.getString().contains("不是一个已加载的炼金配方")),
+                "the alchemy command must reject ids that are not loaded alchemy recipes");
         helper.succeed();
     }
 }
